@@ -1,0 +1,41 @@
+<?php
+return [
+    'base_url'     => 'https://api.scrape.do',
+    'api_token'    => env('SCRAPE_TOKEN', ''),
+    'website'      => 'https://www.sundhedsjobs.dk',
+    'pages'        => [
+        'main' => '/laege',
+    ],
+    'professions'  => [
+        'ward_doctor'                                      => 29,
+        'chief_physician'                                  => 47,
+        'researcher'                                       => 31,
+        'main_education_course'                            => 32,
+        'introduction_position'                            => 33,
+        'clinical_lecturer'                                => 35,
+        'leading_physician'                                => 71,
+        'leader'                                           => 30,
+        'doctor'                                           => 1,
+        'medical_consultant'                               => 36,
+        'senior_physician'                                 => 28,
+        'reserve_doctor'                                   => 43,
+        'specially_responsible_senior_physician'           => 34,
+        'tutor_doctor_for_the_specialist_medical_training' => 45,
+    ],
+    'translations' => [
+            'Afdelingslæge'                        => 'Ward doctor',
+            'Cheflæge'                             => 'Chief physician',
+            'Forsker'                              => 'Researcher',
+            'Hoveduddannelsesforløb'               => 'Main education course',
+            'Introduktionsstilling'                => 'Introduction position',
+            'Klinisk lektor'                       => 'Clinical lecturer',
+            'Ledende overlæge'                     => 'Leading physician',
+            'Leder'                                => 'Leader',
+            'Læge'                                 => 'Doctor',
+            'Lægelig konsulent'                    => 'Medical consultant',
+            'Overlæge'                             => 'Senior physician',
+            'Reservelæge'                          => 'Reserve doctor',
+            'Specialeansvarlig overlæge'           => 'Specially responsible senior physician',
+            'Tutorlæge til speciallægeuddannelsen' => 'Tutor doctor for the specialist medical training',
+    ]
+];
