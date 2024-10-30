@@ -146,6 +146,7 @@ class ScrapeWebsite extends Command
                     $speciality,
                     $workplace,
                     $region,
+                    $websiteUrl . $link
                 ];
             }
 
