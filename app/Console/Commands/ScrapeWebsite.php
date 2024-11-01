@@ -51,7 +51,7 @@ class ScrapeWebsite extends Command
         ];
 
         // get last numbers from Google sheet
-        $existingNumbers = Announcement::all();
+        $existingNumbers = Announcement::query()->orderBy('id')->get();
 
         while ($page < ($maxPage + 1)) {
             $this->info('Page: ' . $page);
@@ -155,13 +155,16 @@ class ScrapeWebsite extends Command
         }
         if (count($jobs) >= 10) {
             Announcement::query()->where('id', '>', '0')->delete();
-            Announcement::query()->insert(array_map(function($job) {
-                return [
-                    'number' => $job[1],
-                    'link' => $job[8]
-                ];
-            }, array_splice($jobs, 0, 10)));
+        } else {
+            Announcement::query()->whereIn('id', $existingNumbers->take(count($jobs))->pluck('id')->toArray())->delete();
         }
+
+        Announcement::query()->insert(array_map(function($job) {
+            return [
+                'number' => $job[1],
+                'link' => $job[8]
+            ];
+        }, array_splice($jobs, 0, 10)));
 
         $this->info('storing');
         \GoogleClient::insertDataIntoSheet(array_reverse($jobs));
