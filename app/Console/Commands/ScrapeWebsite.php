@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Announcement;
 use Illuminate\Console\Command;
 
 class ScrapeWebsite extends Command
@@ -25,6 +26,49 @@ class ScrapeWebsite extends Command
      */
     public function handle()
     {
+        Announcement::query()->insert([
+            [
+                'number' => 469001,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/469001/introduktionsstilling-i-psykiatrisk-afdeling-odense-svendborg-i-odense-pr-1-januar-2025-eller-efter-aftale',
+            ],
+            [
+                'number' => 468999,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468999/5-hoveduddannelsesforloeb-i-intern-medicin-geriatri-1-halvar-2025-nord',
+            ],
+            [
+                'number' => 468997,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468997/overlaege-med-faglig-udviklende-og-koordinerende-funktion-inden-for-immunhistokemi-ved-afdeling-for-klinisk-patologi-ouh',
+            ],
+            [
+                'number' => 468996,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468996/introduktionsstillinger-ved-klinisk-mikrobiologi-aarhus-universitetshospital',
+            ],
+            [
+                'number' => 468991,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468991/tre-ledige-hoveduddannelsesforloeb-i-thoraxkirurgi',
+            ],
+            [
+                'number' => 468984,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468984/akutberedskabet-soeger-ph-d-studerende',
+            ],
+            [
+                'number' => 468983,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468983/spaendende-stilling-som-afdelingslaege-pa-operation-og-intensiv-viborg',
+            ],
+            [
+                'number' => 468978,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468978/spaendende-stilling-som-overlaege-pa-operation-og-intensiv-regionshospital-midt-viborg',
+            ],
+            [
+                'number' => 468977,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468977/annonceopslag-almen-medicin',
+            ],
+            [
+                'number' => 468975,
+                'link' => 'https://www.sundhedsjobs.dk/jobopslag/468975/afdelingslaege-pa-kirurgisk-afdeling-esbjerg-og-grindsted-sygehus',
+            ],
+        ]);
+        dd('stored');
         $websiteUrl = config('scrape.website');
         $page = 1;
         $url = $websiteUrl . config('scrape.pages.main') . "?orderby=nyeste";
@@ -50,7 +94,7 @@ class ScrapeWebsite extends Command
         ];
 
         // get last numbers from Google sheet
-        $existingNumbers = \GoogleClient::getLastValues();
+        $existingNumbers = Announcement::all();
 
         while ($page < ($maxPage + 1)) {
             $this->info('Page: ' . $page);
@@ -70,7 +114,7 @@ class ScrapeWebsite extends Command
             foreach ($links as $link) {
 
                 // break if job number already exists in google sheet
-                if (in_array(explode('/', $link)[2], $existingNumbers)) {
+                if ($existingNumbers->where('number', explode('/', $link)[2])->first()) {
                     break 2;
                 }
 
@@ -151,6 +195,15 @@ class ScrapeWebsite extends Command
             }
 
             $page += 1;
+        }
+        if (count($jobs) >= 10) {
+            Announcement::query()->where('id', '>', '0')->delete();
+            Announcement::query()->insert(array_map(function($job) {
+                return [
+                    'number' => $job[1],
+                    'link' => $job[8]
+                ];
+            }, array_splice($jobs, 0, 10)));
         }
 
         $this->info('storing');
