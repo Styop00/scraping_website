@@ -39,7 +39,7 @@ class Client
         try {
             $googleDocId = config('google.sheet_id');
 
-            $chunkedData = array_chunk($data, 20);
+            $chunkedData = array_chunk($data, 5);
 
             $sheetName = config('google.sheet_name');
 

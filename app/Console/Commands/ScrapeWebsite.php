@@ -164,7 +164,7 @@ class ScrapeWebsite extends Command
                 'number' => $job[1],
                 'link' => $job[8]
             ];
-        }, array_splice($jobs, 0, 10)));
+        }, array_slice($jobs, 0, 10)));
 
         $this->info('storing');
         \GoogleClient::insertDataIntoSheet(array_reverse($jobs));
