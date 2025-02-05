@@ -47,7 +47,7 @@ class ScrapeWebsite extends Command
             'regionPattern'        => '/<li>\s*<strong>\s*Adresse\s*<\/strong>\s*<br\s*\/?>\s*([^<]+)\s*<\/li>/i',
             'contactInfo'          => '/<strong>\s*Kontaktperson\s*<\/strong>\s*<br\s*\/?>\s*([^<]+)\s*(?:<br\s*\/?>|<a)/i',
             'pages'                => '/\bpage=(\d+)\b/',
-            'links'                => '/<a\s+href\s*=\s*"([^"]*\/jobopslag\/[^"]*)"/i',
+            'links'                => '/<a\s*[^>]*?\s*href=[\'"]([^\'"]*\/jobopslag\/[^\'"]*)[\'"]/i',
         ];
 
         // get last numbers from Google sheet
@@ -159,10 +159,10 @@ class ScrapeWebsite extends Command
             Announcement::query()->whereIn('id', $existingNumbers->take(count($jobs))->pluck('id')->toArray())->delete();
         }
 
-        Announcement::query()->insert(array_map(function($job) {
+        Announcement::query()->insert(array_map(function ($job) {
             return [
                 'number' => $job[1],
-                'link' => $job[8]
+                'link'   => $job[8]
             ];
         }, array_slice($jobs, 0, 10)));
 
